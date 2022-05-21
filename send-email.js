@@ -10,7 +10,7 @@ let options = {
   viewPath:'./',
   extName: '.hbs'
   };
-const {ERROR_RECIPIENTS,MJ_API_KEY,MJ_SECRET_KEY } = process.env;
+const {ERROR_RECIPIENTS,MJ_API_KEY,MJ_SECRET_KEY, MJ_FROM_NAME } = process.env;
 
 const mjTransporter = nodemailer.createTransport(
   {
@@ -30,12 +30,12 @@ const mjSend = async mailOptions => {
   await mjTransporter.sendMail(mailOptions)
     .then(message => console.log(message))
     .catch((err) => console.log(err));
-};
+}; 
 
 const createNewDogsEmailOptions = newDogs => ({
   from: {
-    name: 'Nick and Bella Dog Finder',
-    address: process.env.MJ_FROM_EMAIL
+    name: MJ_FROM_NAME,
+    address: MJ_FROM_EMAIL
   },
   to: process.env.NEW_DOGS_RECIPIENTS,
   subject: 'NEW DOGS FOUND!',
@@ -46,7 +46,7 @@ const createNewDogsEmailOptions = newDogs => ({
 
 const createErrorEmailOptions = err => ({
   from: {
-    name: 'Nick and Bella Dog Finder',
+    name: process.env.MJ_FROM_NAME,
     address: process.env.MJ_FROM_EMAIL
   },
   to: ERROR_RECIPIENTS,

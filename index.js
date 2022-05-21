@@ -16,7 +16,7 @@ const GET_AUTH_TOKEN = {
     client_secret: PETFINDER_SECRET_KEY
   }
 };
-cron.schedule('*/10 * * * *', () => {
+cron.schedule('*/'+CHECK_FREQUENCY_MINUTES+' * * * *', () => {
   console.log("Running search...")
   axios(GET_AUTH_TOKEN)
     .then(({ data }) => {
@@ -55,6 +55,9 @@ cron.schedule('*/10 * * * *', () => {
       if (newDogs.length) {
         console.log("New dogs found!")
         sendNewDogsEmail(newDogs);
+      }
+      else{
+        console.log('No dogs found this time :(')
       }
     })
     .catch(err => sendErrorEmail(err));
