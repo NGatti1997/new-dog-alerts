@@ -10,7 +10,7 @@ npm install
 ```
 
 ## Setup
-You must have a mailgun account and a Petfinder API Key.
+You must have a MailJet account and a Petfinder API Key.
 
 Configure the app by including a `.env` file in the project root and define the following variables:
 variable | value
