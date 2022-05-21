@@ -21,7 +21,6 @@ MJ_FROM_EMAIL | MailJet sender email address
 MJ_FROM_NAME | MailJet sender name
 MJ_API_KEY | MailJet API Key
 MJ_SECRET_KEY | MailJet Secret Key
-MG_DOMAIN | Mailgun domain
 CHECK_FREQUENCY_MINUTES | How often you plan on checking for new dogs, this affects how recent dogs must have been updated to be counted as new, as well as how often checks are run
 NEW_DOGS_RECIPIENTS | Comma-separated email addresses to receieve new dog alerts
 ERROR_RECIPIENTS | Comma-separated email addresses to receive error emails (e.g. failed to fetch)
