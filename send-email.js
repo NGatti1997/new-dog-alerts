@@ -1,43 +1,60 @@
 const nodemailer = require('nodemailer');
-const mg = require('nodemailer-mailgun-transport');
+let hbs = require('nodemailer-express-handlebars');
+let options = {
+  viewEngine : {
+      extname: '.hbs', // handlebars extension
+      layoutsDir:'./',
+      defaultLayout:'new-dogs'
+      },
 
-const { NEW_DOGS_RECIPIENTS, ERROR_RECIPIENTS } = process.env;
+  viewPath:'./',
+  extName: '.hbs'
+  };
+const {ERROR_RECIPIENTS,MJ_API_KEY,MJ_SECRET_KEY } = process.env;
 
-const mgTransporter = nodemailer.createTransport(mg({
+const mjTransporter = nodemailer.createTransport(
+  {
+  host: 'in-v3.mailjet.com',
+  port: 587,
   auth: {
-    api_key: process.env.MG_API_KEY,
-    domain: process.env.MG_DOMAIN
-  }
-}));
+    user: MJ_API_KEY,
+    pass: MJ_SECRET_KEY
+  },
+  tls: {
+    ciphers:'SSLv3'
+}
+});
+mjTransporter.use('compile',hbs(options))
 
-const mgSend = async mailOptions => {
-  await mgTransporter.sendMail(mailOptions)
+const mjSend = async mailOptions => {
+  await mjTransporter.sendMail(mailOptions)
     .then(message => console.log(message))
     .catch((err) => console.log(err));
 };
 
 const createNewDogsEmailOptions = newDogs => ({
-  from: `New Dog Alerts 🐕 <${process.env.MG_FROM_EMAIL}>`,
-  to: NEW_DOGS_RECIPIENTS,
+  from: {
+    name: 'Nick and Bella Dog Finder',
+    address: process.env.MJ_FROM_EMAIL
+  },
+  to: process.env.NEW_DOGS_RECIPIENTS,
   subject: 'NEW DOGS FOUND!',
-  template: {
-    name: 'new-dogs.hbs',
-    engine: 'handlebars',
-    context: { newDogs }
-  }
+  template:'new-dogs',
+  context:{ newDogs }
+  
 });
 
 const createErrorEmailOptions = err => ({
-  from: `New Dog Alerts 🐕 <${process.env.MG_FROM_EMAIL}>`,
+  from: {
+    name: 'Nick and Bella Dog Finder',
+    address: process.env.MJ_FROM_EMAIL
+  },
   to: ERROR_RECIPIENTS,
   subject: 'An Error Occurred',
-  template: {
-    name: 'error.hbs',
-    engine: 'handlebars',
-    context: { err }
-  }
+  template: 'error',
+  context: { err }
 });
 
-module.exports.sendNewDogsEmail = async newDogs => mgSend(createNewDogsEmailOptions(newDogs));
+module.exports.sendNewDogsEmail = async newDogs => mjSend(createNewDogsEmailOptions(newDogs));
 
-module.exports.sendErrorEmail = async err => mgSend(createErrorEmailOptions(err));
+module.exports.sendErrorEmail = async err => mjSend(createErrorEmailOptions(err));
