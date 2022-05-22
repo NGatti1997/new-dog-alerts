@@ -10,7 +10,7 @@ let options = {
   viewPath:'./',
   extName: '.hbs'
   };
-const {ERROR_RECIPIENTS,MJ_API_KEY,MJ_SECRET_KEY, MJ_FROM_NAME } = process.env;
+const {ERROR_RECIPIENTS,MJ_API_KEY,MJ_SECRET_KEY, MJ_FROM_NAME, MJ_FROM_EMAIL } = process.env;
 
 const mjTransporter = nodemailer.createTransport(
   {
@@ -46,8 +46,8 @@ const createNewDogsEmailOptions = newDogs => ({
 
 const createErrorEmailOptions = err => ({
   from: {
-    name: process.env.MJ_FROM_NAME,
-    address: process.env.MJ_FROM_EMAIL
+    name: MJ_FROM_NAME,
+    address: MJ_FROM_EMAIL
   },
   to: ERROR_RECIPIENTS,
   subject: 'An Error Occurred',
